@@ -67,6 +67,11 @@ button event is registered.
 Sets the timeout (in milliseconds) that the driver waits before deciding
 if two buttons where pressed "simultaneously" when 3 button emulation is
 enabled.  Default: 50.
+.TP 7
+.BI "Option \*qReopenAttempts\*q \*q" integer \*q
+Number of reopen attempts after a read error occurs on the device (e.g. after
+waking up from suspend). In between each attempt is a 100ms wait. Default: 10.
+
 .SH AUTHORS
 Kristian Høgsberg.
 .SH "SEE ALSO"

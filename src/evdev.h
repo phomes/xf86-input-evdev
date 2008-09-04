@@ -40,7 +40,11 @@
 #include <X11/extensions/XKBstr.h>
 #endif
 
+#define LONG_BITS (sizeof(long) * 8)
+#define NBITS(x) (((x) + LONG_BITS - 1) / LONG_BITS)
+
 typedef struct {
+    const char *device;
     int kernel24;
     int screen;
     int min_x, min_y, max_x, max_y;
@@ -67,6 +71,18 @@ typedef struct {
         Time                expires;     /* time of expiry */
         Time                timeout;
     } emulateMB;
+    int reopen_attempts; /* max attempts to re-open after read failure */
+    int reopen_left;     /* number of attempts left to re-open the device */
+    OsTimerPtr reopen_timer;
+
+    /* Cached info from device. */
+    char name[1024];
+    long bitmask[NBITS(EV_MAX)];
+    long key_bitmask[NBITS(KEY_MAX)];
+    long rel_bitmask[NBITS(REL_MAX)];
+    long abs_bitmask[NBITS(ABS_MAX)];
+    long led_bitmask[NBITS(LED_MAX)];
+    struct input_absinfo absinfo[ABS_MAX];
 } EvdevRec, *EvdevPtr;
 
 /* Middle Button emulation */
