@@ -1649,6 +1649,16 @@ EvdevInitProperty(DeviceIntPtr dev)
     BOOL         invert[2];
     char         reopen;
 
+    prop_reopen = MakeAtom(EVDEV_PROP_REOPEN, strlen(EVDEV_PROP_REOPEN),
+            TRUE);
+
+    reopen = pEvdev->reopen_attempts;
+    rc = XIChangeDeviceProperty(dev, prop_reopen, XA_INTEGER, 8,
+                                PropModeReplace, 1, &reopen, FALSE);
+    if (rc != Success)
+        return;
+
+    XISetDevicePropertyDeletable(dev, prop_reopen, FALSE);
 
     if (pEvdev->flags & (EVDEV_RELATIVE_EVENTS | EVDEV_ABSOLUTE_EVENTS))
     {
@@ -1664,38 +1674,27 @@ EvdevInitProperty(DeviceIntPtr dev)
             return;
 
         XISetDevicePropertyDeletable(dev, prop_invert, FALSE);
+
+        prop_calibration = MakeAtom(EVDEV_PROP_CALIBRATION,
+                strlen(EVDEV_PROP_CALIBRATION), TRUE);
+        rc = XIChangeDeviceProperty(dev, prop_calibration, XA_INTEGER, 32,
+                PropModeReplace, 0, NULL, FALSE);
+        if (rc != Success)
+            return;
+
+        XISetDevicePropertyDeletable(dev, prop_calibration, FALSE);
+
+        prop_swap = MakeAtom(EVDEV_PROP_SWAP_AXES,
+                strlen(EVDEV_PROP_SWAP_AXES), TRUE);
+
+        rc = XIChangeDeviceProperty(dev, prop_swap, XA_INTEGER, 8,
+                PropModeReplace, 1, &pEvdev->swap_axes, FALSE);
+        if (rc != Success)
+            return;
+
+        XISetDevicePropertyDeletable(dev, prop_swap, FALSE);
+
     }
-
-    prop_reopen = MakeAtom(EVDEV_PROP_REOPEN, strlen(EVDEV_PROP_REOPEN),
-            TRUE);
-
-    reopen = pEvdev->reopen_attempts;
-    rc = XIChangeDeviceProperty(dev, prop_reopen, XA_INTEGER, 8,
-                                PropModeReplace, 1, &reopen, FALSE);
-    if (rc != Success)
-        return;
-
-    XISetDevicePropertyDeletable(dev, prop_reopen, FALSE);
-
-
-    prop_calibration = MakeAtom(EVDEV_PROP_CALIBRATION,
-                                strlen(EVDEV_PROP_CALIBRATION), TRUE);
-    rc = XIChangeDeviceProperty(dev, prop_calibration, XA_INTEGER, 32,
-                                PropModeReplace, 0, NULL, FALSE);
-    if (rc != Success)
-        return;
-
-    XISetDevicePropertyDeletable(dev, prop_calibration, FALSE);
-
-    prop_swap = MakeAtom(EVDEV_PROP_SWAP_AXES,
-                         strlen(EVDEV_PROP_SWAP_AXES), TRUE);
-
-    rc = XIChangeDeviceProperty(dev, prop_swap, XA_INTEGER, 8,
-                                PropModeReplace, 1, &pEvdev->swap_axes, FALSE);
-    if (rc != Success)
-        return;
-
-    XISetDevicePropertyDeletable(dev, prop_swap, FALSE);
 }
 
 static int
