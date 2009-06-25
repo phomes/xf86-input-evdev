@@ -1061,6 +1061,9 @@ EvdevAddRelClass(DeviceIntPtr device)
     if (TestBit(REL_DIAL, pEvdev->rel_bitmask))
         num_axes--;
 
+    if (num_axes <= 0)
+        return !Success;
+
     pEvdev->num_vals = num_axes;
     memset(pEvdev->vals, 0, num_axes * sizeof(int));
 
@@ -1188,12 +1191,17 @@ EvdevInit(DeviceIntPtr device)
         FIXME: somebody volunteer to fix this.
      */
     if (pEvdev->flags & EVDEV_RELATIVE_EVENTS) {
-	EvdevAddRelClass(device);
-        if (pEvdev->flags & EVDEV_ABSOLUTE_EVENTS)
-            xf86Msg(X_INFO,"%s: relative axes found, ignoring absolute "
-                           "axes.\n", device->name);
-	pEvdev->flags &= ~EVDEV_ABSOLUTE_EVENTS;
-    } else if (pEvdev->flags & EVDEV_ABSOLUTE_EVENTS)
+        if (EvdevAddRelClass(device) == Success)
+        {
+            if (pEvdev->flags & EVDEV_ABSOLUTE_EVENTS)
+                xf86Msg(X_INFO,"%s: relative axes found, ignoring absolute "
+                        "axes.\n", device->name);
+            pEvdev->flags &= ~EVDEV_ABSOLUTE_EVENTS;
+        } else
+            pEvdev->flags &= ~EVDEV_RELATIVE_EVENTS;
+    }
+
+    if (pEvdev->flags & EVDEV_ABSOLUTE_EVENTS)
         EvdevAddAbsClass(device);
 
 #ifdef HAVE_PROPERTIES
