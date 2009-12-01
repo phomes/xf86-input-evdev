@@ -2522,7 +2522,7 @@ EvdevInitProperty(DeviceIntPtr dev)
             rc = XIChangeDeviceProperty(dev, prop_calibration, XA_INTEGER,
                     32, PropModeReplace, 4, calibration,
                     FALSE);
-        } else {
+        } else if (pEvdev->flags & EVDEV_ABSOLUTE_EVENTS) {
             rc = XIChangeDeviceProperty(dev, prop_calibration, XA_INTEGER,
                     32, PropModeReplace, 0, NULL,
                     FALSE);
