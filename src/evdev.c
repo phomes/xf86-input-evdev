@@ -378,7 +378,7 @@ EvdevReopenTimer(OsTimerPtr timer, CARD32 time, pointer arg)
 
     pEvdev->reopen_left--;
 
-    if (!pEvdev->reopen_left)
+    if (pEvdev->reopen_left <= 0)
     {
         xf86Msg(X_ERROR, "%s: Failed to reopen device after %d attempts.\n",
                 pInfo->name, pEvdev->reopen_attempts);
