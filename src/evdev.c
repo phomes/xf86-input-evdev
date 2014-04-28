@@ -1553,7 +1553,7 @@ EvdevAddAbsValuatorClass(DeviceIntPtr device, int want_scroll_axes)
                                        NO_AXIS_LIMITS, NO_AXIS_LIMITS,
                                        0, 0, 0, Relative);
             SetScrollValuator(device, pEvdev->rel_axis_map[idx],
-                              SCROLL_TYPE_VERTICAL, -1.0,
+                              SCROLL_TYPE_HORIZONTAL, 1.0,
                               SCROLL_FLAG_NONE);
         }
     }
@@ -1696,7 +1696,7 @@ EvdevAddRelValuatorClass(DeviceIntPtr device)
         if (axis == REL_WHEEL)
             SetScrollValuator(device, axnum, SCROLL_TYPE_VERTICAL, -1.0, SCROLL_FLAG_PREFERRED);
         else if (axis == REL_DIAL)
-            SetScrollValuator(device, axnum, SCROLL_TYPE_VERTICAL, -1.0, SCROLL_FLAG_NONE);
+            SetScrollValuator(device, axnum, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
         else if (axis == REL_HWHEEL)
             SetScrollValuator(device, axnum, SCROLL_TYPE_HORIZONTAL, 1.0, SCROLL_FLAG_NONE);
 #endif
